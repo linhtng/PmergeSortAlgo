@@ -42,3 +42,11 @@ This project implements the Ford-Johnson merge-insertion sort algorithm, for bot
 
 ```bash
 ./PmergeMe <positive_integer_1> <positive_integer_2> [...]
+```
+
+
+### References
+- [Merge-insertion sort](https://en.wikipedia.org/wiki/Merge-insertion_sort)
+- [Art of Computer Programming, Chapter 5, The: Volume 3: Sorting and Searching, 2nd Edition
+Donald E. Knuth](https://learning.oreilly.com/library/view/the-art-of/9780321635792/)
+- [Ford-Johnson merge-insertion sort](https://codereview.stackexchange.com/questions/116367/ford-johnson-merge-insertion-sort)
