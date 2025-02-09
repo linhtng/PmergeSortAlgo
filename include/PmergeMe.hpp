@@ -33,7 +33,7 @@ private:
     void MergeInsertionSort(std::vector<int> &vec);
     void MergeInsertionSort(std::deque<int> &lst);
 
-    std::vector<int> generatePowerSequence(int length);
+    std::vector<int> generatePowerSequence(size_t length);
     std::deque<int> generatePowerSequenceDeque(size_t length);
 
     std::vector<std::pair<int, int>> makePairs(const std::vector<int> &vec);
@@ -42,15 +42,15 @@ private:
     std::vector<std::vector<int>> partition(std::vector<int> &nums, std::vector<int> &groupSizes);
     std::deque<std::deque<int>> partition(std::deque<int> &nums, std::deque<int> &groupSizes);
 
-    std::deque<int> binarySearchLength(const std::deque<int> &lst);
-    std::vector<int> binarySearchLength(const std::vector<int> &vec);
+    void insertElementVector(int elementToInsert, const std::unordered_map<int, int> &reversePairMap);
+    void insertElementDeque(int elementToInsert, const std::unordered_map<int, int> &reversePairMap);
 
     bool hasDuplicates(const std::vector<int> &vec);
     bool hasDuplicates(const std::deque<int> &lst);
     void printTime(const std::chrono::high_resolution_clock::duration &duration, int sequenceLen, const std::string &type);
 
-    std::vector<int> sorted;
-    std::vector<int> unsorted;
+    std::vector<int> sortedVec;
+    std::vector<int> unsortedVec;
 
     std::deque<int> sortedDeque;
     std::deque<int> unsortedDeque;
