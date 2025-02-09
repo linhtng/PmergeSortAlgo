@@ -42,19 +42,13 @@ std::vector<int> PmergeMe::generatePowerSequence(int length)
     return sequence;
 }
 
-std::deque<int> PmergeMe::generatePowerSequenceDeque(int length)
+std::deque<int> PmergeMe::generatePowerSequenceDeque(size_t length)
 {
     std::deque<int> sequence;
 
-    int power = 2;
-    int sum = 0;
-    for (int i = 2; i <= length; i++)
+    for (size_t i = 0; i < JACOBSTHAL_SEQUENCE_DEQUE.size() && JACOBSTHAL_SEQUENCE_DEQUE[i] <= length; ++i)
     {
-        sequence.push_back(power);
-        sum += power;
-        if (sum > length)
-            break;
-        power = std::pow(2, i) - power;
+        sequence.push_back(JACOBSTHAL_SEQUENCE_DEQUE[i]);
     }
 
     return sequence;
@@ -261,6 +255,36 @@ std::deque<std::deque<int>> PmergeMe::partition(std::deque<int> &nums, std::dequ
     return partitions;
 }
 
+std::vector<int> PmergeMe::binarySearchLength(const std::vector<int> &groupSizes)
+{
+    std::vector<int> result;
+    int index = 2;
+    for (const auto &size : groupSizes)
+    {
+        index += size;
+        for (int i = 0; i < size; i++)
+        {
+            result.push_back(index - i - 2);
+        }
+    }
+    return result;
+}
+
+std::deque<int> PmergeMe::binarySearchLength(const std::deque<int> &groupSizes)
+{
+    std::deque<int> result;
+    int index = 2;
+    for (const auto &size : groupSizes)
+    {
+        index += size;
+        for (int i = 0; i < size; i++)
+        {
+            result.push_back(index - i - 1);
+        }
+    }
+    return result;
+}
+
 void PmergeMe::MergeInsertionSort(std::deque<int> &dequ)
 {
     // Step 1+2: Group the elements into pairs and perform comparisons to determine the larger element in each pair
@@ -329,23 +353,65 @@ void PmergeMe::MergeInsertionSort(std::deque<int> &dequ)
     */
     if (unsortedDeque.size() > 1)
     {
-        std::deque<int> groupSizes = generatePowerSequenceDeque(unsortedDeque.size());
-        // printdeque(groupSizes);
-        // std::cout << "Unsorted in partitioned groups: \n";
+        std::deque<int> groupSizes = generatePowerSequenceDeque(unsortedDeque.size()); // TODO: maybe better performance if we use cached values
+        // std::cout << "Groups'sized generated so as the sums of sizes of every two adjacent groups form a sequence of powers of two: \n";
+        // printDeque(groupSizes);
         std::deque<std::deque<int>> orderToInsert = partition(unsortedDeque, groupSizes);
-
+        // std::cout << "Unsorted in groups: \n";
+        // for (const auto &sub_deque : orderToInsert)
+        // {
+        //     printDeque(sub_deque);
+        // }
         /*
         Step 6: Insert the remaining elements into the sorted sequence using binary search
         First, find the length of the subsequence to insert the element into
         As we are inserting in order y_4, y_3, y_6, y_5, y_12, y_11, y_10, y_9, y_8, y_7, y_22, y_21...
-        The subsequence length is to insert will be up to but not including x_i.
+        The subsequence length to insert will be up to but not including x_i.
         We then perform a binary search on that subsequence to find the location to insert the element.
         */
+        // Create reverse map for lookup of x_i
+        std::unordered_map<int, int> reversePairMap;
+        for (const auto &pair : pairMap)
+        {
+            reversePairMap[pair.second] = pair.first;
+        }
         for (const std::deque<int> &uninsertedGroup : orderToInsert)
         {
             for (const int &element : uninsertedGroup)
             {
-                sortedDeque.insert(std::lower_bound(sortedDeque.begin(), sortedDeque.end(), element), element);
+                auto elemPairedLarger = reversePairMap.find(element);
+                if (elemPairedLarger != reversePairMap.end())
+                {
+                    int elemToInsertUpperBound = elemPairedLarger->second;
+                    auto boundaryIt = std::find(sortedDeque.begin(), sortedDeque.end(), elemToInsertUpperBound);
+                    if (boundaryIt != sortedDeque.end())
+                    {
+                        /* Now boundaryIt is the index of elemToInsertUpperBound, x_i, in sortedDeque
+                        Use this position to limit binary search range to insert y_i,
+                        which is up to but not including x_i */
+                        // std::cout << "Lower bound search range for element " << element << ":\n";
+                        // for (auto it = sortedDeque.begin(); it != boundaryIt; ++it)
+                        // {
+                        //     std::cout << *it << " ";
+                        // }
+                        // std::cout << "\n";
+                        auto insertPos = std::lower_bound(sortedDeque.begin(), boundaryIt, element);
+                        sortedDeque.insert(insertPos, element);
+                    }
+                }
+                else
+                {
+                    /* When x_i is not found in the pairMap, it means that y_i didn't have a pair
+                    e.g. main chain contain x_1, x_2, x_3, while we need to insert y_4
+                     */
+                    // std::cout << "Element " << element << " doesn't have a pair\n";
+                    // std::cout << "reversePairMap: \n";
+                    // for (const auto &pair : reversePairMap)
+                    // {
+                    //     std::cout << pair.first << " " << pair.second << '\n';
+                    // }
+                    sortedDeque.insert(std::lower_bound(sortedDeque.begin(), sortedDeque.end(), element), element);
+                }
             }
         }
     }
@@ -368,7 +434,15 @@ void PmergeMe::sortDequeTest()
     if (std::is_sorted(sortedDeque.begin(), sortedDeque.end()))
         std::cout << CYAN "Sorted\n" RESET;
     else
+    {
         std::cout << RED "Not sorted\n" RESET;
+        std::cout << "Sorted deque: \n";
+        printDeque(sortedDeque);
+        std::cout << "Supposed to be: \n";
+        std::deque<int> temp = sortedDeque;
+        std::sort(temp.begin(), temp.end());
+        printDeque(temp);
+    }
 }
 
 void PmergeMe::sortVectorTest()
@@ -394,8 +468,7 @@ void PmergeMe::timeSortDeque(int argc, char *argv[])
         try
         {
             int num = std::stoi(input);
-            if (num <= 0)
-                dequ.push_back(num);
+            dequ.push_back(num);
         }
         catch (std::out_of_range &e)
         {
@@ -404,9 +477,13 @@ void PmergeMe::timeSortDeque(int argc, char *argv[])
             return;
         }
     }
+    if (hasDuplicates(dequ))
+    {
+        throw std::invalid_argument("Error. Duplicate elements found");
+    }
     MergeInsertionSort(dequ);
     std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
-    // std::cout << "After: ";
-    // printDeque(sortedDeque);
+    std::cout << "After: ";
+    printDeque(sortedDeque);
     printTime(end - start, argc - 1, "std::deque");
 }

@@ -123,7 +123,7 @@ TestResult testNegativeInput()
     }
 }
 
-TestResult testOSXRandomSequence()
+TestResult testLargerRandomSequence()
 {
     try
     {
@@ -151,11 +151,11 @@ TestResult testOSXRandomSequence()
         p.timeSortDeque(argv.size(), const_cast<char **>(argv.data()));
         p.sortVectorTest();
         p.sortDequeTest();
-        return {"OSX Random Sequence Sort", true, "3000 random numbers sorted successfully"};
+        return {"Larger range Random Sequence Sort", true, "3000 random numbers sorted successfully"};
     }
     catch (const std::exception &e)
     {
-        return {"OSX Random Sequence Sort", false, e.what()};
+        return {"Larger range Random Sequence Sort", false, e.what()};
     }
 }
 
@@ -164,7 +164,7 @@ int main()
     testResults.push_back(testSmallSequence());
     testResults.push_back(testLargeSequence());
     testResults.push_back(testNegativeInput());
-    testResults.push_back(testOSXRandomSequence());
+    testResults.push_back(testLargerRandomSequence());
 
     printTestSummary();
 

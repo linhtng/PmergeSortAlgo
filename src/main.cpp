@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     std::cout << "\n";
     try
     {
-        p.timeSortVector(argc, argv);
+        // p.timeSortVector(argc, argv);
         p.timeSortDeque(argc, argv);
     }
     catch (std::invalid_argument &e)
@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
         std::cout << RED << e.what() << RESET << std::endl;
         return 1;
     }
-    p.sortVectorTest();
+    // p.sortVectorTest();
     p.sortDequeTest();
     return 0;
 }

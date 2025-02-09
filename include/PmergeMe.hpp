@@ -34,7 +34,7 @@ private:
     void MergeInsertionSort(std::deque<int> &lst);
 
     std::vector<int> generatePowerSequence(int length);
-    std::deque<int> generatePowerSequenceDeque(int length);
+    std::deque<int> generatePowerSequenceDeque(size_t length);
 
     std::vector<std::pair<int, int>> makePairs(const std::vector<int> &vec);
     std::deque<std::pair<int, int>> makePairs(const std::deque<int> &lst);
@@ -43,12 +43,7 @@ private:
     std::deque<std::deque<int>> partition(std::deque<int> &nums, std::deque<int> &groupSizes);
 
     std::deque<int> binarySearchLength(const std::deque<int> &lst);
-
-    void binaryInsertionSortdeque(std::deque<int> &subsequenceToInsert, int elemToInsert);
-
-    int binarySearchdeque(std::deque<int> &subsequence, int left, int right, int elemToInsert);
-
-    std::deque<int> findSubsequence(const std::deque<int> &newSequence, const std::deque<int> &oldSequence, int upperBound);
+    std::vector<int> binarySearchLength(const std::vector<int> &vec);
 
     bool hasDuplicates(const std::vector<int> &vec);
     bool hasDuplicates(const std::deque<int> &lst);
@@ -59,4 +54,16 @@ private:
 
     std::deque<int> sortedDeque;
     std::deque<int> unsortedDeque;
+
+    const std::vector<size_t> JACOBSTHAL_SEQUENCE = {
+        2, 2, 6, 10, 22, 42, 86, 170, 342, 682, 1366,
+        2730, 5462, 10922, 21846, 43690, 87382, 174762, 349526, 699050,
+        1398102, 2796202, 5592406, 11184810, 22369622, 44739242, 89478486,
+        178956970, 357913942, 715827882, 1431655766};
+
+    const std::deque<size_t> JACOBSTHAL_SEQUENCE_DEQUE = {
+        2, 2, 6, 10, 22, 42, 86, 170, 342, 682, 1366,
+        2730, 5462, 10922, 21846, 43690, 87382, 174762, 349526, 699050,
+        1398102, 2796202, 5592406, 11184810, 22369622, 44739242, 89478486,
+        178956970, 357913942, 715827882, 1431655766};
 };
